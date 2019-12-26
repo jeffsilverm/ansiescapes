@@ -5,7 +5,16 @@ import os
 ESC = '\u001B['
 isTerminalApp = os.environ.get('TERM_PROGRAM') == 'Apple_Terminal'
 
-def _(s): return s.decode('unicode_escape');
+def _(s):
+# A solution to issue 2, https://github.com/kodie/ansiescapes/issues/2
+# Because I don't know what the data type of s is going to be (it might
+# be a type that has a decode function such as byte array ), simple test
+# is s has a decode method.  If it does, great, call it, otherwise, just 
+# return s.
+  if hasattr(s, "decode"):
+    return s.decode('unicode_escape')
+  else:
+    return s
 
 def cursorTo(x, y = None):
   if (not isinstance(x, numbers.Number)):
